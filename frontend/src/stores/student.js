@@ -1,111 +1,35 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import studentService from '@/services/studentService'
 
-export const useStudentStore = defineStore('student', () => {
-  const students = ref([])
-  const currentStudent = ref(null)
-  const loading = ref(false)
-  const error = ref(null)
-  const pagination = ref({
-    current_page: 1,
-    last_page: 1,
-    per_page: 15,
-    total: 0,
-  })
-
-  async function fetchStudents(params = {}) {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await studentService.getAll(params)
-      students.value = response.data.data.data
-      pagination.value = {
-        current_page: response.data.data.current_page,
-        last_page: response.data.data.last_page,
-        per_page: response.data.data.per_page,
-        total: response.data.data.total,
-      }
-      return { success: true }
-    } catch (err) {
-      error.value = err.response?.data?.message || 'Failed to load students'
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
+export const useStudentStore = defineStore('student', {
+  state: () => ({ list: [], loading: false, error: null }),
+  getters: { count: (s) => s.list.length },
+  actions: {
+    async fetchAll(params = {}) {
+      this.loading = true; this.error = null
+      try {
+        const { data } = await studentService.getAll(params)
+        this.list = data.data ?? data
+      } catch (e) {
+        this.error = e.response?.data?.message || e.message
+      } finally { this.loading = false }
+    },
+    async create(payload) {
+      const { data } = await studentService.create(payload)
+      const item = data.data ?? data
+      this.list.unshift(item)
+      return item
+    },
+    async update(id, payload) {
+      const { data } = await studentService.update(id, payload)
+      const item = data.data ?? data
+      const i = this.list.findIndex(s => s.id === id)
+      if (i !== -1) this.list[i] = item
+      return item
+    },
+    async remove(id) {
+      await studentService.remove(id)
+      this.list = this.list.filter(s => s.id !== id)
     }
-  }
-
-  async function fetchStudent(id) {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await studentService.getById(id)
-      currentStudent.value = response.data.data
-      return { success: true, data: response.data.data }
-    } catch (err) {
-      error.value = err.response?.data?.message || 'Failed to load student'
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
-    }
-  }
-
-  async function createStudent(data) {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await studentService.create(data)
-      students.value.unshift(response.data.data)
-      return { success: true, data: response.data.data }
-    } catch (err) {
-      error.value = err.response?.data?.errors || err.response?.data?.message
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
-    }
-  }
-
-  async function updateStudent(id, data) {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await studentService.update(id, data)
-      const index = students.value.findIndex(s => s.id === id)
-      if (index !== -1) students.value[index] = response.data.data
-      return { success: true, data: response.data.data }
-    } catch (err) {
-      error.value = err.response?.data?.errors || err.response?.data?.message
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
-    }
-  }
-
-  async function deleteStudent(id) {
-    loading.value = true
-    error.value = null
-    try {
-      await studentService.delete(id)
-      students.value = students.value.filter(s => s.id !== id)
-      return { success: true }
-    } catch (err) {
-      error.value = err.response?.data?.message || 'Failed to delete student'
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
-    }
-  }
-
-  return {
-    students,
-    currentStudent,
-    loading,
-    error,
-    pagination,
-    fetchStudents,
-    fetchStudent,
-    createStudent,
-    updateStudent,
-    deleteStudent,
   }
 })
