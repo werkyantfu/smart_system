@@ -1,0 +1,48 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Listen for Xdebug (Laravel)",
+      "type": "php",
+      "request": "launch",
+      "port": 9003,
+      "pathMappings": {
+        "/var/www/html": "${workspaceFolder}/backend"
+      }
+    },
+    {
+      "name": "Launch Chrome (Vue)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src"
+    },
+    {
+      "name": "Laravel Artisan Serve",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["artisan", "serve"],
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Vite Dev Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/frontend",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🚀 Full Stack (Laravel + Vue)",
+      "configurations": [
+        "Laravel Artisan Serve",
+        "Vite Dev Server"
+      ]
+    }
+  ]
+}
