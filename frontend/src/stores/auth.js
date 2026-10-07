@@ -21,13 +21,14 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
       try {
         const { data } = await authService.login(email, password)
+        // api.js already unwrapped: data = { user, token, token_type }
         this.token = data.token
         this.user  = data.user
         localStorage.setItem('token', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
         return true
       } catch (e) {
-        this.error = e.response?.data?.message || 'Login failed'
+        this.error = e.response?.data?.message || e.message || 'Login failed'
         return false
       } finally {
         this.loading = false

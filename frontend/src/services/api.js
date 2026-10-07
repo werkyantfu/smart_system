@@ -5,14 +5,22 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
 })
 
+// Attach Bearer token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
+// Unwrap { success, message, data } envelope -> just `data`
 api.interceptors.response.use(
-  (res) => res,
+  (response) => {
+    const body = response.data
+    if (body && typeof body === 'object' && 'success' in body && 'data' in body) {
+      response.data = body.data           // <-- unwrap!
+    }
+    return response
+  },
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('token')

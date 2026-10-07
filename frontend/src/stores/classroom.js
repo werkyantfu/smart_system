@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import classService from '@/services/classService'
 
-export const useClassroomStore = defineStore('classroom', {
+export const useClassStore = defineStore('classroom', {
   state: () => ({ list: [], loading: false, error: null }),
   getters: { count: (s) => s.list.length },
   actions: {
@@ -9,12 +9,27 @@ export const useClassroomStore = defineStore('classroom', {
       this.loading = true; this.error = null
       try {
         const { data } = await classService.getAll(params)
-        this.list = data.data ?? data
-      } catch (e) { this.error = e.response?.data?.message || e.message }
-      finally { this.loading = false }
+        this.list = Array.isArray(data) ? data : (data.data ?? [])
+      } catch (e) {
+        this.error = e.response?.data?.message || e.message
+      } finally { this.loading = false }
     },
-    async create(p) { const { data } = await classService.create(p); const i = data.data ?? data; this.list.unshift(i); return i },
-    async update(id, p) { const { data } = await classService.update(id, p); const i = data.data ?? data; const x = this.list.findIndex(c => c.id === id); if (x !== -1) this.list[x] = i; return i },
-    async remove(id) { await classService.remove(id); this.list = this.list.filter(c => c.id !== id) }
+    async create(payload) {
+      const { data } = await classService.create(payload)
+      const item = data.data ?? data
+      this.list.unshift(item)
+      return item
+    },
+    async update(id, payload) {
+      const { data } = await classService.update(id, payload)
+      const item = data.data ?? data
+      const i = this.list.findIndex(x => x.id === id)
+      if (i !== -1) this.list[i] = item
+      return item
+    },
+    async remove(id) {
+      await classService.remove(id)
+      this.list = this.list.filter(x => x.id !== id)
+    }
   }
 })

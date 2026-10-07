@@ -9,7 +9,7 @@ export const useStudentStore = defineStore('student', {
       this.loading = true; this.error = null
       try {
         const { data } = await studentService.getAll(params)
-        this.list = data.data ?? data
+        this.list = Array.isArray(data) ? data : (data.data ?? [])
       } catch (e) {
         this.error = e.response?.data?.message || e.message
       } finally { this.loading = false }
@@ -23,13 +23,13 @@ export const useStudentStore = defineStore('student', {
     async update(id, payload) {
       const { data } = await studentService.update(id, payload)
       const item = data.data ?? data
-      const i = this.list.findIndex(s => s.id === id)
+      const i = this.list.findIndex(x => x.id === id)
       if (i !== -1) this.list[i] = item
       return item
     },
     async remove(id) {
       await studentService.remove(id)
-      this.list = this.list.filter(s => s.id !== id)
+      this.list = this.list.filter(x => x.id !== id)
     }
   }
 })
