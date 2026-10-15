@@ -20,15 +20,15 @@ const iconColors = {
   teal: 'from-teal-500 to-cyan-600',
   orange: 'from-orange-500 to-red-600',
   indigo: 'from-indigo-500 to-purple-600',
+  gray: 'from-gray-500 to-slate-600',
 }
 </script>
 
 <template>
   <div class="min-h-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-    <div class="p-6">
+    <div class="max-w-7xl mx-auto p-6">
       
-      <!-- Page Header -->
-      <div v-if="title" class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div v-if="title" class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center gap-4 min-w-0">
           <div v-if="icon" :class="['w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg flex-shrink-0', iconColors[iconColor]]">
             <component :is="icon" class="w-7 h-7 text-white" />
@@ -36,7 +36,7 @@ const iconColors = {
           
           <div class="min-w-0">
             <h1 class="text-2xl font-bold text-gray-800 truncate">{{ title }}</h1>
-            <p v-if="subtitle" class="text-sm text-gray-500 truncate">{{ subtitle }}</p>
+            <p v-if="subtitle" class="text-sm text-gray-500 mt-0.5">{{ subtitle }}</p>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ const iconColors = {
             <button 
               v-if="actionLabel"
               @click="$emit('action')"
-              :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all bg-gradient-to-br', iconColors[iconColor]]"
+              :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all bg-gradient-to-br whitespace-nowrap', iconColors[iconColor]]"
             >
               <slot name="action-icon">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,6 @@ const iconColors = {
         </div>
       </div>
 
-      <!-- Search Bar -->
       <div v-if="showSearch" class="mb-6">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
           <div class="relative">

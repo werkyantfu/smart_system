@@ -1,50 +1,140 @@
 {
+  "// ===== Editor Settings =====": "",
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
   "editor.rulers": [80, 120],
   "editor.wordWrap": "on",
+  "editor.minimap.enabled": true,
   "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.linkedEditing": true,
+  "editor.suggestSelection": "first",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "// ===== Files Settings =====": "",
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
   "files.eol": "\n",
   "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
     "**/node_modules": true,
     "**/vendor": true,
     "**/.vite": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/build": true
   },
+  "files.associations": {
+    "*.vue": "vue",
+    "*.blade.php": "blade",
+    "*.env": "dotenv",
+    "*.env.example": "dotenv"
+  },
+
+  "// ===== PHP / Laravel =====": "",
   "[php]": {
     "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
     "editor.tabSize": 4
   },
+  "php.validate.executablePath": "/usr/bin/php",
+  "php.suggest.basic": false,
+  "intelephense.files.maxSize": 5000000,
+  "intelephense.environment.phpVersion": "8.3.0",
+
+  "// ===== JavaScript / TypeScript =====": "",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  "// ===== Vue 3 =====": "",
   "[vue]": {
     "editor.defaultFormatter": "Vue.volar",
     "editor.tabSize": 2
   },
-  "[javascript]": {
+
+  "// ===== CSS / Tailwind =====": "",
+  "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[typescript]": {
+  "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "css.validate": false,
+  "scss.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "vue": "html",
+    "javascript": "javascript",
+    "typescript": "typescript"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+
+  "// ===== Markdown =====": "",
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": false
+    }
   },
-  "tailwindCSS.includeLanguages": {
-    "vue": "html"
+  "markdown.preview.breaks": true,
+
+  "// ===== JSON =====": "",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "// ===== Terminal =====": "",
   "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.cursorBlinking": true,
+
+  "// ===== Git =====": "",
   "git.autofetch": true,
   "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.postCommitCommand": "none",
+  "git.ignoreLimitWarning": true,
+
+  "// ===== Search =====": "",
   "search.exclude": {
     "**/node_modules": true,
     "**/vendor": true,
     "**/dist": true,
-    "**/coverage": true
-  }
+    "**/build": true,
+    "**/.vite": true,
+    "**/coverage": true,
+    "**/*.lock": true
+  },
+
+  "// ===== Emmet =====": "",
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "vue": "html",
+    "blade": "html"
+  },
+  "emmet.triggerExpansionOnTab": true
 }

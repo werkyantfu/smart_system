@@ -38,10 +38,24 @@
       "group": "build"
     },
     {
+      "label": "🔄 Refresh Database",
+      "type": "shell",
+      "command": "php artisan migrate:fresh --seed",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group": "build"
+    },
+    {
       "label": "🧪 Run Tests (Backend)",
       "type": "shell",
       "command": "php artisan test",
       "options": { "cwd": "${workspaceFolder}/backend" },
+      "group": "test"
+    },
+    {
+      "label": "🧪 Run Tests (Frontend)",
+      "type": "shell",
+      "command": "npm run test",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
       "group": "test"
     },
     {
@@ -55,6 +69,20 @@
       "label": "🎨 Format Code (Pint)",
       "type": "shell",
       "command": "./vendor/bin/pint",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group": "build"
+    },
+    {
+      "label": "🎨 Format Code (Prettier)",
+      "type": "shell",
+      "command": "npx prettier --write .",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "group": "build"
+    },
+    {
+      "label": "🧹 Clear Cache",
+      "type": "shell",
+      "command": "php artisan optimize:clear",
       "options": { "cwd": "${workspaceFolder}/backend" },
       "group": "build"
     }

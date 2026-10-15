@@ -1,11 +1,44 @@
 {
   "recommendations": [
+    "vue.volar",
+    "vue.vscode-typescript-vue-plugin",
     "bmewburn.vscode-intelephense-client",
     "onecentlin.laravel-blade",
+    "ryannaddy.laravel-artisan",
+    "codingyu.laravel-goto-view",
     "amiralizadeh9480.laravel-extra-intellisense",
-    "Vue.volar",
-    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
-    "cweijan.vscode-database-client2"
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "humao.rest-client",
+    "rangav.vscode-thunder-client",
+    "formulahendry.auto-rename-tag",
+    "naumovs.color-highlight",
+    "wayou.vscode-todo-highlight",
+    "gruntfuggly.todo-tree",
+    "pkief.material-icon-theme",
+    "zhuangtongfa.material-theme",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "davidanson.vscode-markdownlint",
+    "jock.svg",
+    "redhat.vscode-yaml",
+    "dotjoshjohnson.xml",
+    "ms-azuretools.vscode-docker",
+    "mtxr.sqltools",
+    "cweijan.vscode-mysql-client2",
+    "alexcvzz.vscode-sqlite",
+    "usernamehw.errorlens",
+    "wix.vscode-import-cost",
+    "christian-kohler.path-intellisense",
+    "visualstudioexptteam.vscodeintellicode"
+  ],
+  "unwantedRecommendations": [
+    "octref.vetur",
+    "hookyqr.beautify"
   ]
 }

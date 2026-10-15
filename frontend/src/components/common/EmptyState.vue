@@ -18,14 +18,15 @@ const colors = {
   teal: { bg: 'bg-teal-100', icon: 'text-teal-500', btn: 'from-teal-500 to-cyan-600' },
   indigo: { bg: 'bg-indigo-100', icon: 'text-indigo-500', btn: 'from-indigo-500 to-purple-600' },
   orange: { bg: 'bg-orange-100', icon: 'text-orange-500', btn: 'from-orange-500 to-red-600' },
+  gray: { bg: 'bg-gray-100', icon: 'text-gray-500', btn: 'from-gray-500 to-slate-600' },
 }
 </script>
 
 <template>
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-16 text-center">
-    <div :class="['w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center shadow-lg', colors[color]?.bg || colors.blue.bg]">
-      <component :is="icon" v-if="icon" :class="['w-10 h-10', colors[color]?.icon || colors.blue.icon]" />
-      <svg v-else :class="['w-10 h-10', colors[color]?.icon || colors.blue.icon]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div :class="['w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center shadow-lg', colors[color]?.bg]">
+      <component :is="icon" v-if="icon" :class="['w-10 h-10', colors[color]?.icon]" />
+      <svg v-else :class="['w-10 h-10', colors[color]?.icon]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
       </svg>
     </div>
@@ -36,7 +37,7 @@ const colors = {
     <button 
       v-if="actionLabel"
       @click="$emit('action')"
-      :class="['inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all bg-gradient-to-br', colors[color]?.btn || colors.blue.btn]"
+      :class="['inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all bg-gradient-to-br', colors[color]?.btn]"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

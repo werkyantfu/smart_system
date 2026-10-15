@@ -4,15 +4,13 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { 
   Menu, Bell, ChevronDown, LogOut, Settings as SettingsIcon,
-  Search, User, HelpCircle, Moon, Sun, CheckCircle,
-  FileText, DollarSign, Users, GraduationCap, X
+  Search, User, HelpCircle, Moon, Sun, X,
+  FileText, DollarSign, Users, GraduationCap, Check, Sparkles
 } from 'lucide-vue-next'
 
-defineProps({
-  title: { type: String, default: 'Dashboard' }
-})
-
+defineProps({ title: { type: String, default: 'Dashboard' } })
 const emit = defineEmits(['toggle-sidebar'])
+
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
@@ -22,6 +20,7 @@ const showNotifications = ref(false)
 const showSearch = ref(false)
 const searchQuery = ref('')
 const isDark = ref(false)
+const currentTime = ref(new Date())
 
 const notifications = ref([
   { id: 1, title: 'New student registered', desc: 'Abebe Kebede joined Grade 9A', time: '5 min ago', unread: true, icon: Users, color: 'blue' },
@@ -32,15 +31,15 @@ const notifications = ref([
 
 const unreadCount = computed(() => notifications.value.filter(n => n.unread).length)
 
-// Breadcrumb
 const breadcrumbs = computed(() => {
-  const path = route.path
-  const parts = path.split('/').filter(Boolean)
-  if (parts.length === 0) return ['Dashboard']
-  return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1))
+  const parts = route.path.split('/').filter(Boolean)
+  if (parts.length === 0) return [{ name: 'Dashboard', path: '/dashboard' }]
+  return parts.map((p, i) => ({
+    name: p.charAt(0).toUpperCase() + p.slice(1),
+    path: '/' + parts.slice(0, i + 1).join('/')
+  }))
 })
 
-// Role-based colors
 const roleGradients = {
   super_admin: 'from-red-500 via-pink-500 to-rose-600',
   admin: 'from-blue-500 via-indigo-500 to-purple-600',
@@ -53,6 +52,12 @@ const roleGradients = {
 }
 
 const userGradient = computed(() => roleGradients[auth.userRole] || roleGradients.admin)
+const greeting = computed(() => {
+  const h = currentTime.value.getHours()
+  if (h < 12) return 'Good morning'
+  if (h < 18) return 'Good afternoon'
+  return 'Good evening'
+})
 
 function toggleUserMenu() {
   showUserMenu.value = !showUserMenu.value
@@ -101,23 +106,22 @@ const getColorClasses = (color) => {
   return colors[color] || colors.blue
 }
 
-// Global search
 const searchResults = computed(() => {
   if (!searchQuery.value) return []
   const q = searchQuery.value.toLowerCase()
   const items = [
-    { label: 'Dashboard', path: '/dashboard', icon: 'LayoutDashboard' },
-    { label: 'Students', path: '/students', icon: 'Users' },
-    { label: 'Teachers', path: '/teachers', icon: 'GraduationCap' },
-    { label: 'Classes', path: '/classes', icon: 'BookOpen' },
-    { label: 'Subjects', path: '/subjects', icon: 'BookOpen' },
-    { label: 'Attendance', path: '/attendance', icon: 'Calendar' },
-    { label: 'Marks', path: '/marks', icon: 'FileText' },
-    { label: 'Fees', path: '/fees', icon: 'DollarSign' },
-    { label: 'Library', path: '/library', icon: 'Library' },
-    { label: 'Announcements', path: '/announcements', icon: 'Megaphone' },
-    { label: 'Reports', path: '/reports', icon: 'BarChart3' },
-    { label: 'Settings', path: '/settings', icon: 'Settings' },
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Students', path: '/students' },
+    { label: 'Teachers', path: '/teachers' },
+    { label: 'Classes', path: '/classes' },
+    { label: 'Subjects', path: '/subjects' },
+    { label: 'Attendance', path: '/attendance' },
+    { label: 'Marks', path: '/marks' },
+    { label: 'Fees', path: '/fees' },
+    { label: 'Library', path: '/library' },
+    { label: 'Announcements', path: '/announcements' },
+    { label: 'Reports', path: '/reports' },
+    { label: 'Settings', path: '/settings' },
   ]
   return items.filter(i => i.label.toLowerCase().includes(q))
 })
@@ -128,7 +132,6 @@ function navigateTo(path) {
   searchQuery.value = ''
 }
 
-// Keyboard shortcut (Ctrl+K)
 function handleKeydown(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
     e.preventDefault()
@@ -137,12 +140,15 @@ function handleKeydown(e) {
   if (e.key === 'Escape') closeAll()
 }
 
+let timer
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
+  timer = setInterval(() => { currentTime.value = new Date() }, 60000)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  clearInterval(timer)
 })
 </script>
 
@@ -159,9 +165,8 @@ onUnmounted(() => {
 
     <div class="flex items-center justify-between h-16 px-4 sm:px-6">
       
-      <!-- ═══ LEFT SIDE ═══ -->
+      <!-- LEFT SIDE -->
       <div class="flex items-center gap-3 min-w-0 flex-1">
-        <!-- Mobile menu -->
         <button 
           @click="emit('toggle-sidebar')" 
           class="lg:hidden p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all"
@@ -169,30 +174,36 @@ onUnmounted(() => {
           <Menu class="w-5 h-5 text-gray-700" />
         </button>
 
-        <!-- Title & Breadcrumb -->
         <div class="min-w-0">
-          <div class="flex items-center gap-2 text-xs text-gray-500 mb-0.5">
-            <button 
-              @click="router.push('/dashboard')" 
-              class="hover:text-blue-600 transition-colors"
-            >
+          <!-- Breadcrumbs -->
+          <div class="flex items-center gap-1.5 text-xs text-gray-500 mb-0.5">
+            <button @click="router.push('/dashboard')" class="hover:text-blue-600 transition-colors font-medium">
               Home
             </button>
             <template v-for="(crumb, idx) in breadcrumbs" :key="idx">
               <span class="text-gray-300">/</span>
-              <span :class="idx === breadcrumbs.length - 1 ? 'text-blue-600 font-medium' : 'text-gray-500'">
-                {{ crumb }}
-              </span>
+              <button 
+                @click="router.push(crumb.path)"
+                :class="idx === breadcrumbs.length - 1 ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'"
+              >
+                {{ crumb.name }}
+              </button>
             </template>
           </div>
           <h1 class="text-lg font-bold text-gray-800 truncate">{{ title }}</h1>
         </div>
       </div>
 
-      <!-- ═══ RIGHT SIDE ═══ -->
+      <!-- RIGHT SIDE -->
       <div class="flex items-center gap-1.5 flex-shrink-0">
         
-        <!-- Search Button -->
+        <!-- Greeting (desktop) -->
+        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+          <Sparkles class="w-3.5 h-3.5 text-blue-500" />
+          <span class="text-xs font-medium text-blue-700">{{ greeting }}, {{ auth.userName?.split(' ')[0] }}</span>
+        </div>
+
+        <!-- Search -->
         <button 
           @click="toggleSearch"
           class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all group"
@@ -204,7 +215,6 @@ onUnmounted(() => {
           </kbd>
         </button>
 
-        <!-- Search icon (mobile) -->
         <button 
           @click="toggleSearch"
           class="md:hidden p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all"
@@ -212,7 +222,7 @@ onUnmounted(() => {
           <Search class="w-5 h-5 text-gray-600" />
         </button>
 
-        <!-- Theme toggle -->
+        <!-- Theme Toggle -->
         <button 
           @click="toggleTheme"
           class="p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all"
@@ -234,7 +244,6 @@ onUnmounted(() => {
             </span>
           </button>
 
-          <!-- Notifications Dropdown -->
           <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="opacity-0 scale-95 -translate-y-2"
@@ -245,7 +254,6 @@ onUnmounted(() => {
           >
             <div v-if="showNotifications" 
               class="absolute right-0 mt-2 w-[360px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
-              <!-- Header -->
               <div class="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                   <div>
@@ -254,13 +262,13 @@ onUnmounted(() => {
                   </div>
                   <button 
                     @click="markAllRead"
-                    class="text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded-lg hover:bg-white transition-colors"
+                    class="text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded-lg hover:bg-white transition-colors flex items-center gap-1"
                   >
+                    <Check class="w-3 h-3" />
                     Mark all read
                   </button>
                 </div>
               </div>
-              <!-- List -->
               <div class="max-h-96 overflow-y-auto">
                 <div v-for="notif in notifications" :key="notif.id" 
                   :class="['px-5 py-3 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors flex items-start gap-3 relative', notif.unread ? 'bg-blue-50/30' : '']">
@@ -269,13 +277,12 @@ onUnmounted(() => {
                     <component :is="notif.icon" :class="['w-5 h-5', getColorClasses(notif.color).text]" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-800 leading-tight">{{ notif.title }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5 leading-tight">{{ notif.desc }}</p>
+                    <p class="text-sm font-semibold text-gray-800">{{ notif.title }}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">{{ notif.desc }}</p>
                     <p class="text-[11px] text-gray-400 mt-1">{{ notif.time }}</p>
                   </div>
                 </div>
               </div>
-              <!-- Footer -->
               <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 text-center">
                 <button class="text-sm text-blue-600 hover:text-blue-700 font-medium">
                   View all notifications
@@ -301,7 +308,6 @@ onUnmounted(() => {
             <ChevronDown :class="['w-4 h-4 text-gray-400 hidden sm:block transition-transform', showUserMenu ? 'rotate-180' : '']" />
           </button>
 
-          <!-- User Dropdown -->
           <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="opacity-0 scale-95 -translate-y-2"
@@ -312,7 +318,6 @@ onUnmounted(() => {
           >
             <div v-if="showUserMenu" 
               class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
-              <!-- User Info -->
               <div :class="['px-5 py-4 bg-gradient-to-br text-white', userGradient]">
                 <div class="flex items-center gap-3">
                   <div class="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center text-white font-bold text-xl ring-2 ring-white/30">
@@ -328,7 +333,6 @@ onUnmounted(() => {
                 </div>
               </div>
               
-              <!-- Menu Items -->
               <div class="p-2">
                 <button 
                   @click="router.push('/settings'); showUserMenu = false"
@@ -350,9 +354,7 @@ onUnmounted(() => {
                   <span class="text-sm font-medium">Settings</span>
                 </button>
 
-                <button 
-                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group"
-                >
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group">
                   <div class="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center transition-colors">
                     <HelpCircle class="w-4 h-4 text-gray-600 group-hover:text-green-600" />
                   </div>
@@ -377,7 +379,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- ═══ SEARCH MODAL ═══ -->
+    <!-- SEARCH MODAL -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="opacity-0 scale-95"
@@ -389,7 +391,6 @@ onUnmounted(() => {
       <div v-if="showSearch" 
         class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
         
-        <!-- Search Input -->
         <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
           <Search class="w-5 h-5 text-gray-400" />
           <input 
@@ -404,11 +405,10 @@ onUnmounted(() => {
           </button>
         </div>
 
-        <!-- Results -->
         <div class="max-h-96 overflow-y-auto p-2">
           <template v-if="searchResults.length > 0">
             <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              Pages
+              Quick Navigation
             </div>
             <button 
               v-for="result in searchResults" 

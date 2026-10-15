@@ -18,13 +18,21 @@
       "webRoot": "${workspaceFolder}/frontend/src"
     },
     {
+      "name": "Launch Edge (Vue)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src"
+    },
+    {
       "name": "Laravel Artisan Serve",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "php",
       "runtimeArgs": ["artisan", "serve"],
       "cwd": "${workspaceFolder}/backend",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Vite Dev Server",
@@ -33,7 +41,8 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "cwd": "${workspaceFolder}/frontend",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ],
   "compounds": [
