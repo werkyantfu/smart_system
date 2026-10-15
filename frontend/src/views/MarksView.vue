@@ -14,7 +14,7 @@ const isSidebarOpen = ref(false)
     <Sidebar :is-open="isSidebarOpen" @close="isSidebarOpen = false" />
 
     <div class="flex-1 flex flex-col overflow-hidden">
-      <AppHeader title="Marks" @toggle-sidebar="isSidebarOpen = true" />
+      <AppHeader @toggle-sidebar="isSidebarOpen = true" />
 
       <main class="flex-1 overflow-y-auto">
         <PageContainer 
@@ -24,14 +24,12 @@ const isSidebarOpen = ref(false)
           icon-color="red"
           action-label="Enter Marks"
         >
-          <template #action-icon>
-            <Plus class="w-4 h-4" />
-          </template>
+          <template #action-icon><Plus class="w-4 h-4" /></template>
 
           <EmptyState 
             :icon="FileText"
-            title="No marks records"
-            description="Start entering marks for your students"
+            title="No marks records yet"
+            description="Start by entering marks for your students"
             action-label="Enter First Marks"
             color="red"
           />

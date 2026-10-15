@@ -1,83 +1,69 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref } from 'vue'
 import Sidebar from '@/components/common/AppSidebar.vue'
 import AppHeader from '@/components/common/AppHeader.vue'
-import ClassList from '@/components/classes/ClassList.vue'
-import { useClassStore } from '@/stores/class'
-import { Plus, Search } from 'lucide-vue-next'
+import PageContainer from '@/components/common/PageContainer.vue'
+import { BookOpen, Plus, Edit, Trash2, Users } from 'lucide-vue-next'
 
-const classStore = useClassStore()
 const isSidebarOpen = ref(false)
-const searchQuery = ref('')
 
-const filteredClasses = computed(() => {
-  if (!searchQuery.value) return classStore.items || []
-  const q = searchQuery.value.toLowerCase()
-  return (classStore.items || []).filter(cls =>
-    cls.name?.toLowerCase().includes(q) ||
-    String(cls.grade_level).includes(q) ||
-    cls.section?.toLowerCase().includes(q)
-  )
-})
-
-onMounted(() => {
-  classStore.fetchAll?.()
-})
-
-function handleEdit(cls) {
-  console.log('Edit:', cls)
-}
-
-function handleDelete(cls) {
-  if (confirm(`Delete ${cls.name}?`)) {
-    classStore.remove?.(cls.id)
-  }
-}
+const classes = ref([
+  { id: 1, name: 'Grade 9A', grade_level: 9, section: 'A', students: 40 },
+  { id: 2, name: 'Grade 9B', grade_level: 9, section: 'B', students: 40 },
+  { id: 3, name: 'Grade 10A', grade_level: 10, section: 'A', students: 40 },
+  { id: 4, name: 'Grade 10B', grade_level: 10, section: 'B', students: 40 },
+])
 </script>
 
 <template>
   <div class="flex h-screen bg-gray-50">
     <Sidebar :is-open="isSidebarOpen" @close="isSidebarOpen = false" />
 
-    <div class="flex-1 flex flex-col overflow-hidden min-w-0">
-      <AppHeader title="Classes" @toggle-sidebar="isSidebarOpen = true" />
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <AppHeader @toggle-sidebar="isSidebarOpen = true" />
 
-      <main class="flex-1 overflow-y-auto p-6">
-        <!-- Page Header -->
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <div class="min-w-0">
-            <h2 class="text-2xl font-bold text-gray-800">All Classes</h2>
-            <p class="text-gray-500 text-sm">Manage school classes</p>
+      <main class="flex-1 overflow-y-auto">
+        <PageContainer 
+          title="Classes"
+          subtitle="Manage school classes"
+          :icon="BookOpen"
+          icon-color="blue"
+          action-label="Add Class"
+          show-search
+          search-placeholder="Search classes..."
+        >
+          <template #action-icon><Plus class="w-4 h-4" /></template>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div v-for="cls in classes" :key="cls.id" 
+              class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <BookOpen class="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-800">{{ cls.name }}</h3>
+                  <p class="text-xs text-gray-500">Grade {{ cls.grade_level }} · Section {{ cls.section }}</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                <Users class="w-4 h-4" />
+                <span>{{ cls.students }} students</span>
+              </div>
+
+              <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
+                <button class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium">
+                  <Edit class="w-4 h-4" /> Edit
+                </button>
+                <button class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium">
+                  <Trash2 class="w-4 h-4" /> Delete
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <button 
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors flex-shrink-0"
-          >
-            <Plus class="w-4 h-4" />
-            <span>Add Class</span>
-          </button>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div class="relative">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-            <input 
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search classes..."
-              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-800"
-            />
-          </div>
-        </div>
-
-        <!-- Class List -->
-        <ClassList 
-          :classes="filteredClasses" 
-          :loading="classStore.loading"
-          @edit="handleEdit"
-          @delete="handleDelete"
-        />
+        </PageContainer>
       </main>
     </div>
   </div>

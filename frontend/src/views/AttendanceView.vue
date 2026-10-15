@@ -14,24 +14,22 @@ const isSidebarOpen = ref(false)
     <Sidebar :is-open="isSidebarOpen" @close="isSidebarOpen = false" />
 
     <div class="flex-1 flex flex-col overflow-hidden">
-      <AppHeader title="Attendance" @toggle-sidebar="isSidebarOpen = true" />
+      <AppHeader @toggle-sidebar="isSidebarOpen = true" />
 
       <main class="flex-1 overflow-y-auto">
         <PageContainer 
-          title="Attendance Records"
+          title="Attendance"
           subtitle="Track and manage student attendance"
           :icon="Calendar"
           icon-color="orange"
           action-label="Mark Attendance"
         >
-          <template #action-icon>
-            <Plus class="w-4 h-4" />
-          </template>
+          <template #action-icon><Plus class="w-4 h-4" /></template>
 
           <EmptyState 
             :icon="Calendar"
             title="No attendance records yet"
-            description="Start by marking attendance for your students. You can mark attendance for individual classes or bulk students."
+            description="Start by marking attendance for your students"
             action-label="Mark First Attendance"
             color="orange"
           />
